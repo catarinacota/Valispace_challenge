@@ -1,0 +1,18 @@
+<div class="container">
+  <h2>My Functions</h2>
+
+  <% @functions.each do |function| %>
+    <p><%= function.name %> =
+      <%= function.content %>
+      <%= link_to edit_admin_function_path(function) do %>
+        <i class="fas fa-pencil-alt"></i>
+      <% end %>
+      <%= link_to admin_function_path(function), method: :delete, data: {confirm: 'Are you sure?'} do %>
+        <i class="fas fa-trash-alt"></i>
+      <% end %>
+    </p>
+  <% end %>
+
+  <%= link_to "Add a new function", new_admin_function_path, class: "btn btn-danger" %>
+  <%= link_to "Back", root_path, class: "btn btn-danger" %>
+</div>

@@ -1,0 +1,36 @@
+<div class="container">
+  <h3>All Functions</h3>
+
+  <% @functions.each do |function| %>
+    <p><%= function.name %> =
+       <%= function.content %>
+    </p>
+  <% end %>
+
+  <%= form_tag root_path, method: :get do %>
+    <%= text_field_tag :query,
+      params[:query],
+      class: "form-control",
+      placeholder: "Function"
+    %>
+    <%= submit_tag "Calculate", name: nil %>
+  <% end %>
+
+
+<!--   <form action="/" method="get">
+    <input type="text" name="query" placeholder="Function">
+    <input type="submit" value="Calculate">
+  </form> -->
+
+  <% unless @function.nil? %>
+    <% if @function =~ /[a-zA-Z]/  %>
+      <% index = @function =~ /[a-zA-Z]/ %>
+      <p> <%= @function[index] %> is not defined</p>
+    <% else %>
+      <p>Solution = <%= @function %> </p>
+      <p><%= @function_arr %></p>
+      <p><%= @solution %></p>
+    <% end %>
+  <% end %>
+
+</div>
