@@ -2,7 +2,7 @@ class Admin::FunctionsController < ApplicationController
   before_action :set_function, only: [:show, :destroy, :edit, :update]
 
   def index
-    @functions = Function.all
+    @functions = Function.where(user: current_user.id)
   end
 
   def show

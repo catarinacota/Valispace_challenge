@@ -1,1 +1,40 @@
-// Specific CSS for your home-page
+// .home-wrapper{
+//   width: 100%;
+//   margin: 60px auto;
+//   height: calc(100vh - 180px);
+//   background: white;
+// }
+
+.left-section{
+  margin: 20px auto;
+  width: 55%;
+  height: calc(100vh - 130px);
+  float: left;
+  background: $light-gray;
+  padding: 10px 50px;
+}
+
+.right-section{
+  margin: 20px auto;
+  width: 45%;
+  height: calc(100vh - 130px);
+  float: right;
+  overflow: scroll;
+  background: $light-gray;
+}
+
+.solution-section{
+  margin: 40px 30px;
+}
+
+.function-section{
+  margin-left: 30px;
+  margin-top: 60px;
+  h4{
+    font-size: 20px;
+  }
+  p{
+    font-size: 15px;
+  }
+}
+

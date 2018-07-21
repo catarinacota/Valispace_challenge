@@ -1,15 +1,13 @@
-<%= simple_form_for [:admin, @function] do |f| %>
+    <%= simple_form_for [:admin, @function] do |f| %>
 
-  <div class="col-md-6 col-md-offset-3">
-    <div>
-      <%= f.input :name %>
-      <%= f.input :content%>
-    </div>
+      <div class="form-inputs">
+        <%= f.input :name %>
+        <%= f.input :content%>
+      </div>
 
-    <div>
-      <%= f.button :submit, class: "btn btn-success" %>
-      <%= link_to "Back", admin_functions_path, class: "btn btn-danger" %>
-    </div>
-  </div>
+      <div class="form-actions">
+        <%= f.button :submit, class: "button" %>
+        <%= link_to "Back", admin_functions_path, class: "button-sec" %>
+      </div>
 
-<% end %>
+    <% end %>

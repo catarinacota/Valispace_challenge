@@ -1,36 +1,46 @@
-<div class="container">
-  <h3>All Functions</h3>
+<div class="home-wrapper">
+  <div class="left-section">
 
-  <% @functions.each do |function| %>
-    <p><%= function.name %> =
-       <%= function.content %>
-    </p>
-  <% end %>
+    <div class="form-inline">
+      <%= form_tag root_path, method: :get do %>
+        <%= text_field_tag :query,
+          params[:query],
+          class: "form",
+          placeholder: "function"
+        %>
+        <%= submit_tag "Calculate", name: nil, class: "button" %>
+      <% end %>
+    </div>
 
-  <%= form_tag root_path, method: :get do %>
-    <%= text_field_tag :query,
-      params[:query],
-      class: "form-control",
-      placeholder: "Function"
-    %>
-    <%= submit_tag "Calculate", name: nil %>
-  <% end %>
+    <br>
 
+    <div class="solution-section">
+      <% unless @function.nil? %>
+        <% if @function =~ /[a-zA-Z]/  %>
+          <p>Solution</p>
+          <% index = @function =~ /[a-zA-Z]/ %>
+          <p><strong><%= @function_arr[index] %></strong> is not defined!</p>
+        <% else %>
+          <p>Solution</p>
+          <p>=<strong> <%= @solution %></strong></p>
+          <p><%= @function %> = <%= @solution %></p>
+          <p><%= @function_arr %></p>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
 
-<!--   <form action="/" method="get">
-    <input type="text" name="query" placeholder="Function">
-    <input type="submit" value="Calculate">
-  </form> -->
-
-  <% unless @function.nil? %>
-    <% if @function =~ /[a-zA-Z]/  %>
-      <% index = @function =~ /[a-zA-Z]/ %>
-      <p> <%= @function[index] %> is not defined</p>
-    <% else %>
-      <p>Solution = <%= @function %> </p>
-      <p><%= @function_arr %></p>
-      <p><%= @solution %></p>
-    <% end %>
-  <% end %>
-
+  <div class="right-section">
+    <div class="function-section">
+      <% if user_signed_in? %>
+        <h4>Functions - Library</h4>
+      <% else %>
+        <h4>Functions - Library</h4>
+        <p><i>(*) please sign in to create your own functions!</i></p>
+      <% end %>
+      <% @functions.each do |function| %>
+        <p><%= function.name %> = <%= function.content %></p>
+      <% end %>
+    </div>
+  </div>
 </div>

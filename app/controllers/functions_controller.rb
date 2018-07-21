@@ -2,38 +2,65 @@ class FunctionsController < ApplicationController
   skip_before_action :authenticate_user!, only: [:index]
 
   def index
-  @functions = Function.all
+    @functions = Function.list
 
     if params[:query].present?
-      @function = params[:query]#.split(/\s+|\b/)
-      @function_arr = params[:query].split(/\s+|\b/)
 
-      num = num_functions_db(@function_arr)
-      indexes =  @function_arr.each_index.select{|i| find(@function_arr[i])}
-      while num != 0
-        indexes.each do |index|
-          a = find(@function_arr[index])
-          @function_arr[index] = a.content.split(/\s+|\b/)
-        end
-        @function_arr = @function_arr.flatten
+      @function_arr = params[:query].gsub(" ", "").split(/\s+|\b/)
+
+      # check if the user typed a DB's function
+      if find(@function_arr)
         num = num_functions_db(@function_arr)
         indexes =  @function_arr.each_index.select{|i| find(@function_arr[i])}
+        while num != 0
+          indexes.each do |index|
+            a = find(@function_arr[index])
+            @function_arr[index] = a.content.split(/\s+|\b/)
+          end
+          @function_arr = @function_arr.flatten
+          num = num_functions_db(@function_arr)
+          indexes =  @function_arr.each_index.select{|i| find(@function_arr[i])}
+        end
       end
 
-      if @function_arr.include? '-'
-        minus_sign = @function_arr.each_index.select{|i| @function_arr[i] == '-'}
-        minus_sign.each do |index|
-          @function_arr[index + 1] = '-'+@function_arr[index + 1]
-        end
-        if minus_sign.include?(0)
-          @function_arr.delete_at(0)
-        end
-        @function_arr = @function_arr.map { |x| x == '-' ? '+' : x }
-      end
+      @function_arr = replace_function(@function_arr)
+      @function_arr = check_minus_sign(@function_arr)
 
-      @solution = calculation(@function_arr).join.to_i
+      # calculation without DB'functions
+      @solution = calculation(@function_arr).join.to_f.round(2)
+      if @solution.floor == @solution
+        @solution = @solution.round(0)
+      end
       @function = @function_arr.join
     end
+  end
+
+  def check_minus_sign(function)
+    if function.include? '-'
+      minus_sign = function.each_index.select{|i| function[i] == '-'}
+      minus_sign.each do |index|
+        function[index + 1] = '-'+function[index + 1]
+      end
+      if minus_sign.include?(0)
+        function.delete_at(0)
+      end
+    end
+    function = function.map { |x| x == '-' ? '+' : x }
+  end
+
+  def replace_function(function)
+    operators = function.each_index.select{|i| function[i].match(/\/\-|\/\+|\*\-|\*\+/)}
+    if !operators.nil?
+      operators.each do |i|
+        function[i+1] = function[i][1] + function[i+1]
+        function[i] = function[i][0]
+      end
+    end
+    return function
+  end
+
+  def find(function)
+    Function.where(name: function).take
   end
 
   def num_functions_db(function)
@@ -44,21 +71,17 @@ class FunctionsController < ApplicationController
     return num
   end
 
-  def find(function)
-    Function.where(name: function).take
-  end
-
   def calculation(function)
     new_function = []
     number_calcs = (function.length - 1) / 2
 
     while number_calcs > 0
-      if function.include? '*'
-        index = function.index('*')
-        calc = multiplication(function[index - 1], function[index + 1])
-      elsif function.include? '/'
+      if function.include? '/'
         index = function.index('/')
         calc = division(function[index - 1], function[index + 1])
+      elsif function.include? '*'
+        index = function.index('*')
+        calc = multiplication(function[index - 1], function[index + 1])
       elsif function.include? '+'
         index = function.index('+')
         calc = sum(function[index - 1], function[index + 1])
@@ -90,19 +113,19 @@ class FunctionsController < ApplicationController
   end
 
   def multiplication(a, b)
-    a.to_i * b.to_i
+    a.to_f * b.to_f
   end
 
   def division(a, b)
-    a.to_i / b.to_f
+    a.to_f / b.to_f
   end
 
   def sum(a, b)
-    a.to_i + b.to_i
+    a.to_f + b.to_f
   end
 
   def subtraction(a, b)
-    a.to_i - b.to_i
+    a.to_f - b.to_f
   end
 
 end

@@ -1,0 +1,27 @@
+.button{
+  background: $green;
+  padding: 10px 20px;
+  border-radius: 10px;
+  opacity: 0.8;
+  color: white;
+}
+
+.button:hover{
+  opacity: 1;
+  text-decoration: none;
+  color: white;
+}
+
+.button-sec{
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: 2px solid $green;
+  color: $green;
+  opacity: 0.8;
+}
+
+.button-sec:hover{
+  opacity: 1;
+  text-decoration: none;
+  color: $green;
+}
