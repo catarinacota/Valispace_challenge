@@ -17,7 +17,7 @@ class FunctionsController < ApplicationController
         while num != 0
           index_array.each do |index|
             find_function = find(@function_array[index])
-            @function_array[index] = find_function.content.split(/\b/)
+            @function_array[index] = find_function.content.gsub(" ", "").split(/\b/)
           end
           @function_array = @function_array.flatten
           num = num_functions_db(@function_array)
