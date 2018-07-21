@@ -4,34 +4,37 @@ class FunctionsController < ApplicationController
   def index
     @functions = Function.list
 
+    # check the input field
     if params[:query].present?
 
-      @function_arr = params[:query].gsub(" ", "").split(/\s+|\b/)
+      #remove whitespaces and split into an array
+      @function_array = params[:query].gsub(" ", "").split(/\b/)
 
       # check if the user typed a DB's function
-      if find(@function_arr)
-        num = num_functions_db(@function_arr)
-        indexes =  @function_arr.each_index.select{|i| find(@function_arr[i])}
+      if find(@function_array)
+        num = num_functions_db(@function_array)
+        index_array =  @function_array.each_index.select{|i| find(@function_array[i])}
         while num != 0
-          indexes.each do |index|
-            a = find(@function_arr[index])
-            @function_arr[index] = a.content.split(/\s+|\b/)
+          index_array.each do |index|
+            find_function = find(@function_array[index])
+            @function_array[index] = find_function.content.split(/\b/)
           end
-          @function_arr = @function_arr.flatten
-          num = num_functions_db(@function_arr)
-          indexes =  @function_arr.each_index.select{|i| find(@function_arr[i])}
+          @function_array = @function_array.flatten
+          num = num_functions_db(@function_array)
+          index_array =  @function_array.each_index.select{|i| find(@function_array[i])}
         end
       end
 
-      @function_arr = replace_function(@function_arr)
-      @function_arr = check_minus_sign(@function_arr)
+      # check function for multiplications and/or divisions followed by "+" or "-"
+      @function_array = replace_function(@function_array)
+      @function_array = check_minus_sign(@function_array)
 
-      # calculation without DB'functions
-      @solution = calculation(@function_arr).join.to_f.round(2)
+      # calculation // solution
+      @solution = calculation(@function_array).join.to_f.round(2)
       if @solution.floor == @solution
         @solution = @solution.round(0)
       end
-      @function = @function_arr.join
+      @function = @function_array.join
     end
   end
 

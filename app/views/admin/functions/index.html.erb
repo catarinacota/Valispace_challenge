@@ -1,31 +1,30 @@
 <div class="container">
   <div class="table-wrapper">
-  <div class="table-header">
-    <h4>My functions</h4>
-    <%= link_to "Add a new function", new_admin_function_path, class: "button" %>
-  </div>
-
-  <div class="table-body">
-    <table class="table">
-      <tbody>
-        <% @functions.each do |function| %>
-          <tr>
-            <td class="table-function-name"><%= function.name %> = <%= function.content %>
-            </td>
-            <td class="table-function">
-              <%= link_to edit_admin_function_path(function) do %>
-                <i class="fas fa-pencil-alt"></i>
-              <% end %>
-            </td>
-            <td class="table-function">
-              <%= link_to admin_function_path(function), method: :delete, data: {confirm: 'Are you sure?'} do %>
-              <i class="fas fa-trash-alt"></i>
-              <% end %>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-  </div>
+    <div class="table-header">
+      <h4>My functions</h4>
+      <%= link_to "Add a new function", new_admin_function_path, class: "button" %>
+    </div>
+    <div class="table-body">
+      <table class="table">
+        <tbody>
+          <% @functions.each do |function| %>
+            <tr>
+              <td class="table-function-name"><%= function.name %> = <%= function.content %>
+              </td>
+              <td class="table-function">
+                <%= link_to edit_admin_function_path(function) do %>
+                  <i class="fas fa-pencil-alt"></i>
+                <% end %>
+              </td>
+              <td class="table-function">
+                <%= link_to admin_function_path(function), method: :delete, data: {confirm: 'Are you sure?'} do %>
+                <i class="fas fa-trash-alt"></i>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
