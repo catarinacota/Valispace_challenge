@@ -1,12 +1,7 @@
 class Function < ApplicationRecord
   belongs_to :user
 
-  validates :name, presence: true, uniqueness: true, format: { with: /[\w-_]+/,
-    message: "invalid format. ex: function_1 / function1 / function-1" }
+  validates :name, presence: true, uniqueness: true }
   validates :content, presence: true
-
-  def self.list
-    Function.all
-  end
 
 end
