@@ -2,7 +2,7 @@ class FunctionsController < ApplicationController
   skip_before_action :authenticate_user!, only: [:index]
 
   def index
-    @functions = Function.list
+    @functions = Function.all
 
     # check the input field
     if params[:query].present?
