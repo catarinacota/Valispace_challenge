@@ -8,7 +8,9 @@ Live demo here: https://valispace-challenge.herokuapp.com/
 
 After cloning the app, create the db, run the migrations and seed.
 
+```
 $ rails db:create db:migrate db:seed
+```
 
 ## Built With
 
