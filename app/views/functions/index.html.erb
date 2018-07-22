@@ -19,7 +19,7 @@
         <% if @function =~ /[a-zA-Z]/  %>
           <p>Solution</p>
           <% index = @function =~ /[a-zA-Z]/ %>
-          <p><strong><%= @function_arr[index] %></strong> is not defined!</p>
+          <p><strong><%= @function_array[index] %></strong> is not defined!</p>
         <% else %>
           <p>Solution</p>
           <p><i> <%= params[:query] %> =</i><strong> <%= @solution %></strong></p>
