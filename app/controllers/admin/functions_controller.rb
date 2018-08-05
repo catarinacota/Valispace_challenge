@@ -55,27 +55,40 @@ class Admin::FunctionsController < ApplicationController
     @print_alert = []
   end
 
+
+
   def update
     new_params = function_params
-
-    check_function = new_params[:content].gsub("id:", "")
-    if check_function =~ /[a-zA-Z]/
-      print_alert = []
-      check_function.split.each do |function|
-        if function =~ /[a-z]/
-          print_alert << "#{function} is not defined!"
-        end
-      end
-      @print_alert = print_alert
-      @function[:content] = new_params[:content]
+    if new_params[:content].include?("id:#{@function.id}")
+      @print_alert = ["Sorry, you can't do that!"]
+      @function = change_function(@function)
+      render :edit
+    elsif check_loop(new_params)
+      @print_alert = ["Sorry, you can't do that!"]
       @function = change_function(@function)
       render :edit
     else
-      if @function.update(function_params)
-        redirect_to admin_functions_path
-      else
+      check_function = new_params[:content].gsub("id:", "")
+      if check_function =~ /[a-zA-Z]/
+        print_alert = []
+        check_function.split.each do |function|
+          if function =~ /[a-z]/
+            print_alert << "#{function} is not defined!"
+          end
+        end
+        @print_alert = print_alert
+        @function[:content] = new_params[:content]
+        @function = change_function(@function)
         render :edit
+      else
+        if @function.update(new_params)
+          redirect_to admin_functions_path
+        else
+          @function = change_function(@function)
+          render :edit
+        end
       end
+
     end
   end
 
@@ -114,7 +127,7 @@ class Admin::FunctionsController < ApplicationController
     params[:function] ||= {}
     params[:function][:content] ||= []
     str = ""
-    params[:function][:content].split.each do |sub|
+    params[:function][:content].split(/\b/).each do |sub|
       if Function.find_by(name: sub)
         str += " id:#{Function.find_by(name: sub).id} "
       else
@@ -122,7 +135,6 @@ class Admin::FunctionsController < ApplicationController
       end
     end
     params[:function][:content] = str.strip.gsub(/\s+/, " ")
-
     params.require(:function).permit(:name, :content)
   end
 
@@ -133,5 +145,18 @@ class Admin::FunctionsController < ApplicationController
       function[:content] = function[:content].gsub(f, sub.name)
     end
     return function
+  end
+
+  def check_loop(params)
+    check_params = params[:content].scan(/id:[0-9]+/)
+    return false if check_params.empty?
+    check_params.each do |f|
+      func = Function.find(f[3...f.size])
+      if func.content.include?("id:#{@function.id}")
+        return true
+      else
+        return false
+      end
+    end
   end
 end
