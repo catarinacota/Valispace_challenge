@@ -35,8 +35,8 @@
         <p><i>(*) please sign in to create your own functions!</i></p>
       <% end %>
       <ul class="list-unstyled">
-      <% @functions.each do |function| %>
-        <li class="library-row"><%= function.name %> = <%= function.content %></li>
+      <% @print_functions.each do |function| %>
+        <li class="library-row"><%= function.split("=")[0] %> = <%= function.split("=")[1] %></li>
       <% end %>
       </ul>
     </div>

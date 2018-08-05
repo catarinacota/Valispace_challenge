@@ -37,6 +37,13 @@
   padding: 0 20px;
   font-size: 20px;
   color: $green;
+  opacity: 0.8;
+}
+
+.navbar-wagon-logo:hover {
+  text-decoration: none;
+  color: $green;
+  opacity: 1;
 }
 
 /* Navbar link */

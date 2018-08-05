@@ -1,13 +1,13 @@
-    <%= simple_form_for [:admin, @function] do |f| %>
+<%= simple_form_for [:admin, @function] do |f| %>
 
-      <div class="form-inputs">
-        <%= f.input :name %>
-        <%= f.input :content%>
-      </div>
+  <div class="form-inputs">
+    <%= f.input :name %>
+    <%= f.input :content%>
+  </div>
 
-      <div class="form-actions">
-        <%= f.button :submit, class: "button" %>
-        <%= link_to "Back", admin_functions_path, class: "button-sec" %>
-      </div>
+  <div class="form-actions">
+    <%= f.button :submit, class: "button" %>
+    <%= link_to "Back", admin_functions_path, class: "button-sec" %>
+  </div>
 
-    <% end %>
+<% end %>

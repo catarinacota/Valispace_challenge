@@ -7,17 +7,20 @@
     <div class="table-body">
       <table class="table">
         <tbody>
-          <% @functions.each do |function| %>
+          <% @print_functions.each do |function| %>
+          <% function_name = function.split("=")[0] %>
+          <% function_value = function.split("=")[1] %>
             <tr>
-              <td class="table-function-name"><%= function.name %> = <%= function.content %>
+              <td class="table-function-name">
+                <%= function_name %> = <%= function_value %>
               </td>
               <td class="table-function">
-                <%= link_to edit_admin_function_path(function) do %>
+                <%= link_to edit_admin_function_path(Function.find_by(name: function_name.strip).id) do %>
                   <i class="fas fa-pencil-alt"></i>
                 <% end %>
               </td>
               <td class="table-function">
-                <%= link_to admin_function_path(function), method: :delete, data: {confirm: 'Are you sure?'} do %>
+                <%= link_to admin_function_path(Function.find_by(name: function_name.strip).id), method: :delete, data: {confirm: 'Are you sure? All functions related are also going to be deleted.'} do %>
                 <i class="fas fa-trash-alt"></i>
                 <% end %>
               </td>
@@ -28,3 +31,4 @@
     </div>
   </div>
 </div>
+

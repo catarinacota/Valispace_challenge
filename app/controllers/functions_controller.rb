@@ -2,7 +2,22 @@ class FunctionsController < ApplicationController
   skip_before_action :authenticate_user!, only: [:index]
 
   def index
-    @functions = Function.all
+    functions = Function.all.order(id: :asc)
+
+    @print_functions = []
+    functions.each do |function|
+      sub_function = function.name + " = "
+      function.content.split.each do |sub_fun|
+        if sub_fun.include?("id")
+          sub_function += Function.find(sub_fun.split(":").last).name
+        else
+          sub_function += sub_fun
+        end
+        sub_function
+      end
+      @print_functions << sub_function
+    end
+    @print_functions
 
     # check the input field
     if params[:query].present?

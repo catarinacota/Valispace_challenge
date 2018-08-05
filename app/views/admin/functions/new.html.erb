@@ -3,4 +3,11 @@
     <h4>New Function</h4>
     <%= render "form", function: @function %>
   </div>
+  <div>
+    <% if !@print_alert.nil? %>
+      <% @print_alert.each do |alert| %>
+        <p><%= alert %></p>
+      <% end %>
+    <% end %>
+  </div>
 </div>
