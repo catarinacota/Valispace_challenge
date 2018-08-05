@@ -15,11 +15,11 @@
     <br>
 
     <div class="solution-section">
-      <% unless @function.nil? %>
-        <% if @function =~ /[a-zA-Z]/  %>
-          <p>Solution</p>
-          <% index = @function =~ /[a-zA-Z]/ %>
-          <p><strong><%= @function_array[index] %></strong> is not defined!</p>
+      <% unless @solution.nil? %>
+        <% if @function_str =~ /[a-zA-Z]/ %>
+          <% @function_str.scan(/[a-zA-Z]{1,2}\d{0,5}/).each do |function| %>
+            <p><%= function %> is not defined!</p>
+          <% end %>
         <% else %>
           <p>Solution</p>
           <p><i> <%= params[:query] %> =</i><strong> <%= @solution %></strong></p>
@@ -27,6 +27,7 @@
       <% end %>
     </div>
   </div>
+
 
   <div class="right-section">
     <div class="function-section">

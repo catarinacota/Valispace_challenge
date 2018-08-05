@@ -23,34 +23,55 @@ class FunctionsController < ApplicationController
     if params[:query].present?
 
       #remove whitespaces and split into an array
-      @function_array = params[:query].gsub(" ", "").split(/\b/)
+      function_array = params[:query].gsub(" ", "").split(/\b/)
 
       # check if the user typed a DB's function
-      if find(@function_array)
-        num = num_functions_db(@function_array)
-        index_array =  @function_array.each_index.select{|i| find(@function_array[i])}
+      if find(function_array)
+        num = num_functions_db(function_array)
+        index_array =  function_array.each_index.select{|i| find(function_array[i])}
         while num != 0
           index_array.each do |index|
-            find_function = find(@function_array[index])
-            @function_array[index] = find_function.content.gsub(" ", "").split(/\b/)
+            find_function = find(function_array[index])
+            replace_content(find_function)
+            function_array[index] = "(" + find_function.content + ")"
           end
-          @function_array = @function_array.flatten
-          num = num_functions_db(@function_array)
-          index_array =  @function_array.each_index.select{|i| find(@function_array[i])}
+          function_array = function_array.join.split(/\b/)
+          num = num_functions_db(function_array)
+          index_array =  function_array.each_index.select{|i| find(function_array[i])}
         end
       end
 
-      # check function for multiplications and/or divisions followed by "+" or "-"
-      @function_array = replace_function(@function_array)
-      @function_array = check_minus_sign(@function_array)
-
-      # calculation // solution
-      @solution = calculation(@function_array).join.to_f.round(2)
-      if @solution.floor == @solution
-        @solution = @solution.round(0)
+      @function_str = function_array.join
+      if @function_str.include?("/")
+        @function_str = "1.0*" + @function_str
       end
-      @function = @function_array.join
+
+      unless @function_str =~ /[a-zA-Z]/
+        @solution = eval(@function_str)
+      else
+        @solution = @function_str
+      end
+
+      # check function for multiplications and/or divisions followed by "+" or "-"
+      # @function_array = replace_function(@function_array)
+      # @function_array = check_minus_sign(@function_array)
+
+      # # calculation // solution
+      # @solution = calculation(@function_array).join.to_f.round(2)
+      # if @solution.floor == @solution
+      #   @solution = @solution.round(0)
+      # end
+      # @function = @function_array.join
     end
+  end
+
+  def replace_content(function)
+    database_functions = function[:content].scan(/id:[0-9]+/)
+    database_functions.each do |f|
+      sub = Function.find(f[3...f.size])
+      function[:content] = function[:content].gsub(f, sub.name)
+    end
+    return function
   end
 
   def check_minus_sign(function)
