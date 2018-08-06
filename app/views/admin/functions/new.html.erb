@@ -3,7 +3,7 @@
     <h4>New Function</h4>
     <%= render "form", function: @function %>
   </div>
-  <div>
+  <div class="form-login">
     <% if !@print_alert.nil? %>
       <% @print_alert.each do |alert| %>
         <p><%= alert %></p>

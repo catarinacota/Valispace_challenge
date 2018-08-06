@@ -2,7 +2,7 @@ class FunctionsController < ApplicationController
   skip_before_action :authenticate_user!, only: [:index]
 
   def index
-    functions = Function.all.order(id: :asc)
+    functions = Function.all.order(name: :asc)
 
     @print_functions = []
     functions.each do |function|
@@ -42,12 +42,17 @@ class FunctionsController < ApplicationController
       end
 
       @function_str = function_array.join
-      if @function_str.include?("/")
+      #if @function_str.include?("/")
         @function_str = "1.0*" + @function_str
-      end
+      #end
 
       unless @function_str =~ /[a-zA-Z]/
-        @solution = eval(@function_str)
+        solution = eval(@function_str)
+        if solution.floor == solution
+          @solution = solution.round(0)
+        else
+          @solution = solution.round(2)
+        end
       else
         @solution = @function_str
       end
@@ -74,29 +79,29 @@ class FunctionsController < ApplicationController
     return function
   end
 
-  def check_minus_sign(function)
-    if function.include? '-'
-      minus_sign = function.each_index.select{|i| function[i] == '-'}
-      minus_sign.each do |index|
-        function[index + 1] = '-'+function[index + 1]
-      end
-      if minus_sign.include?(0)
-        function.delete_at(0)
-      end
-    end
-    function = function.map { |x| x == '-' ? '+' : x }
-  end
+  # def check_minus_sign(function)
+  #   if function.include? '-'
+  #     minus_sign = function.each_index.select{|i| function[i] == '-'}
+  #     minus_sign.each do |index|
+  #       function[index + 1] = '-'+function[index + 1]
+  #     end
+  #     if minus_sign.include?(0)
+  #       function.delete_at(0)
+  #     end
+  #   end
+  #   function = function.map { |x| x == '-' ? '+' : x }
+  # end
 
-  def replace_function(function)
-    operators = function.each_index.select{|i| function[i].match(/\/\-|\/\+|\*\-|\*\+/)}
-    if !operators.nil?
-      operators.each do |i|
-        function[i+1] = function[i][1] + function[i+1]
-        function[i] = function[i][0]
-      end
-    end
-    return function
-  end
+  # def replace_function(function)
+  #   operators = function.each_index.select{|i| function[i].match(/\/\-|\/\+|\*\-|\*\+/)}
+  #   if !operators.nil?
+  #     operators.each do |i|
+  #       function[i+1] = function[i][1] + function[i+1]
+  #       function[i] = function[i][0]
+  #     end
+  #   end
+  #   return function
+  # end
 
   def find(function)
     Function.where(name: function).take
@@ -110,61 +115,61 @@ class FunctionsController < ApplicationController
     return num
   end
 
-  def calculation(function)
-    new_function = []
-    number_calcs = (function.length - 1) / 2
+  # def calculation(function)
+  #   new_function = []
+  #   number_calcs = (function.length - 1) / 2
 
-    while number_calcs > 0
-      if function.include? '/'
-        index = function.index('/')
-        calc = division(function[index - 1], function[index + 1])
-      elsif function.include? '*'
-        index = function.index('*')
-        calc = multiplication(function[index - 1], function[index + 1])
-      elsif function.include? '+'
-        index = function.index('+')
-        calc = sum(function[index - 1], function[index + 1])
-      elsif function.include? '-'
-        index = function.index('-')
-        calc = subtraction(function[index - 1], function[index + 1])
-      end
+  #   while number_calcs > 0
+  #     if function.include? '/'
+  #       index = function.index('/')
+  #       calc = division(function[index - 1], function[index + 1])
+  #     elsif function.include? '*'
+  #       index = function.index('*')
+  #       calc = multiplication(function[index - 1], function[index + 1])
+  #     elsif function.include? '+'
+  #       index = function.index('+')
+  #       calc = sum(function[index - 1], function[index + 1])
+  #     elsif function.include? '-'
+  #       index = function.index('-')
+  #       calc = subtraction(function[index - 1], function[index + 1])
+  #     end
 
-      if number_calcs == 1
-        function = new_function.push(calc)
-      else
-        function = new_function(function, calc, index)
-      end
-      number_calcs -= 1
-    end
-    return function
-  end
+  #     if number_calcs == 1
+  #       function = new_function.push(calc)
+  #     else
+  #       function = new_function(function, calc, index)
+  #     end
+  #     number_calcs -= 1
+  #   end
+  #   return function
+  # end
 
-  def new_function(function, calc, index)
-    new_function = []
-    if index == 1
-      new_function.push(calc, function[index + 2...function.length])
-    elsif index == function.length - 1
-      new_function.push(function[0..index - 2], calc)
-    else
-      new_function.push(function[0..index - 2], calc, function[index + 2...function.length])
-    end
-    return new_function.flatten
-  end
+  # def new_function(function, calc, index)
+  #   new_function = []
+  #   if index == 1
+  #     new_function.push(calc, function[index + 2...function.length])
+  #   elsif index == function.length - 1
+  #     new_function.push(function[0..index - 2], calc)
+  #   else
+  #     new_function.push(function[0..index - 2], calc, function[index + 2...function.length])
+  #   end
+  #   return new_function.flatten
+  # end
 
-  def multiplication(a, b)
-    a.to_f * b.to_f
-  end
+  # def multiplication(a, b)
+  #   a.to_f * b.to_f
+  # end
 
-  def division(a, b)
-    a.to_f / b.to_f
-  end
+  # def division(a, b)
+  #   a.to_f / b.to_f
+  # end
 
-  def sum(a, b)
-    a.to_f + b.to_f
-  end
+  # def sum(a, b)
+  #   a.to_f + b.to_f
+  # end
 
-  def subtraction(a, b)
-    a.to_f - b.to_f
-  end
+  # def subtraction(a, b)
+  #   a.to_f - b.to_f
+  # end
 
 end

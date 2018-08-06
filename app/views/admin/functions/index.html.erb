@@ -20,7 +20,7 @@
                 <% end %>
               </td>
               <td class="table-function">
-                <%= link_to admin_function_path(Function.find_by(name: function_name.strip).id), method: :delete, data: {confirm: 'Are you sure? All functions related are also going to be deleted.'} do %>
+                <%= link_to admin_function_path(Function.find_by(name: function_name.strip).id), method: :delete, data: {confirm: 'Are you sure? All functions related will be deleted!!'} do %>
                 <i class="fas fa-trash-alt"></i>
                 <% end %>
               </td>

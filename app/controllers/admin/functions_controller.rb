@@ -2,7 +2,8 @@ class Admin::FunctionsController < ApplicationController
   before_action :set_function, only: [:show, :destroy, :edit, :update]
 
   def index
-    functions = Function.where(user: current_user.id)
+    all_functions = Function.all.order(name: :asc)
+    functions = all_functions.where(user: current_user.id)
     @print_functions = []
     functions.each do |function|
       sub_function = function.name + " = "
@@ -150,7 +151,6 @@ class Admin::FunctionsController < ApplicationController
   def check_loop(params)
     check_params = params[:content].scan(/id:[0-9]+/)
     return false if check_params.empty?
-
     while !check_params.empty?
       more_params = []
       check_params.each do |f|
@@ -158,7 +158,7 @@ class Admin::FunctionsController < ApplicationController
         if func.content.include?("id:#{@function.id}")
           return true
         else
-          more_params << func.content.scan(/id:[0-9]+/)[0]
+          more_params << func.content.scan(/id:[0-9]+/)[0] if !func.content.scan(/id:[0-9]+/)[0].nil?
         end
       end
       check_params = more_params.uniq
@@ -166,16 +166,4 @@ class Admin::FunctionsController < ApplicationController
     return false
   end
 
-  def loop(params)
-    check_params = params[:content].scan(/id:[0-9]+/)
-    return false if check_params.empty?
-    check_params.each do |f|
-      func = Function.find(f[3...f.size])
-      if func.content.include?("id:#{@function.id}")
-        return true
-      else
-        return false
-      end
-    end
-  end
 end
