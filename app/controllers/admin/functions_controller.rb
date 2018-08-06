@@ -150,6 +150,25 @@ class Admin::FunctionsController < ApplicationController
   def check_loop(params)
     check_params = params[:content].scan(/id:[0-9]+/)
     return false if check_params.empty?
+
+    while !check_params.empty?
+      more_params = []
+      check_params.each do |f|
+        func = Function.find(f[3...f.size])
+        if func.content.include?("id:#{@function.id}")
+          return true
+        else
+          more_params << func.content.scan(/id:[0-9]+/)[0]
+        end
+      end
+      check_params = more_params.uniq
+    end
+    return false
+  end
+
+  def loop(params)
+    check_params = params[:content].scan(/id:[0-9]+/)
+    return false if check_params.empty?
     check_params.each do |f|
       func = Function.find(f[3...f.size])
       if func.content.include?("id:#{@function.id}")
